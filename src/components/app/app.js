@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 
 import AppHeader from '../app-header/app-header';
 import SearchPanel from '../search-panel/search-panel';
@@ -15,28 +15,50 @@ const AppBlock = styled.div`
 `;
 
 const StyledAppBlock = styled(AppBlock)`
-    background-color: grey;
+    background-color: skyblue;
 `;
 
-const App = () => {
+export default class App extends Component {
 
-    const data = [
-        {label: 'Going to learn React', important: true, id: 'fdsf'},
-        {label: 'That is so good', important: false, id: 'fddf'},
-        {label: 'I need a break...', important: false, id: 'fsde'}
-    ];
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [
+                {label: 'Going to learn React', important: true, id: 'fdsf'},
+                {label: 'That is so good', important: false, id: 'wert'},
+                {label: 'I need a break...', important: false, id: 'fsde'}
+            ]
+        };
+        this.deleteItem = this.deleteItem.bind(this);
+    }
 
-    return (
-        <StyledAppBlock>
-            <AppHeader/>
-            <div className="search-panel d-flex">
-                <SearchPanel/>
-                <PostStatusFilter/>
-            </div>
-            <PostList posts={data}/>
-            <PostAddForm/>
-        </StyledAppBlock>
-    )
+    deleteItem(id) {
+        this.setState(({data}) => {
+            const index = data.findIndex(elem => elem.id === id);
+
+            const newArr = [...data.slice(0, index), ...data.slice(index + 1)];
+
+            return {
+                data: newArr
+            }
+        });
+    }
+
+    render() {
+    
+        return (
+            <StyledAppBlock>
+                <AppHeader/>
+                <div className="search-panel d-flex">
+                    <SearchPanel/>
+                    <PostStatusFilter/>
+                </div>
+                <PostList 
+                    posts={this.state.data}
+                    onDelete={this.deleteItem}/>
+                <PostAddForm/>
+            </StyledAppBlock>
+        )
+    }
+
 }
-
-export default App;
